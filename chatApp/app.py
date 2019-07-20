@@ -3,24 +3,22 @@ from flask_socketio import SocketIO
 from random import randrange
 from mysql_models import *
 import os
-import mysql_config
 from datetime import datetime
 from sqlalchemy import or_,and_
 from operator import attrgetter
+from MySQLDB import *
+from RedisDB import *
 
 app = Flask(__name__)
 app.debug = True
 socketio = SocketIO(app)
-usersOnlineDisplayNames = []
-usersOnlineAvatars = []
-usersOnlineId = []
+
 usersAll = []
 FLASK_DEBUG = True
 
 
-mysql_config.setup(app)
-db.init_app(app)
-
+databaseHelper = RedisDB()
+databaseHelper.connect(app)
 
 @app.route('/', methods=["GET", "POST"])
 
@@ -63,52 +61,30 @@ def register():
 def chat(id):
     connectionEvent()   
     session['receiverid'] = id
-    user = User.query.filter_by(user_id =id).first()
-    idreceiver = user.user_id
+    
+    user = databaseHelper.queryUserWithUserID(id)
+    
+    idreceiver = user['user_id']
     idsender = session.get("userid")
     
-    session["msgHistory"] = []
-    content = {}
-    con = db.engine.raw_connection()
-    cursor = con.cursor()
-    cursor.callproc("getMsg", (idsender, idreceiver))
-    for row in cursor.fetchall():
-       msg = row[11].replace("\n","")
-       msg = msg.encode('utf8')
-       author = row[2].replace("\n","")
-       author = author.encode('utf8')
-       content = {"msg": msg, "sender": author, "avatar": row[4]}
-       session["msgHistory"].append(content)
-       content = {}
+    session["msgHistory"] = databaseHelper.getMsg(idsender,idreceiver)
 
-    return render_template('chat.html',chatWithUser=user.display_name, avatarUserChatWith=user.avatar)
+    return render_template('chat.html',chatWithUser=user['display_name'], avatarUserChatWith=user['avatar'])
 
 
 @socketio.on('connection event')
 def connectionEvent():
     newUserDisplayName = session.get('displayName')
+    newUsername = session.get('username')
     newUseravatar = session.get('avatar')
     newUserId = session.get('userid')
 
-    User.query.filter_by(user_id =newUserId).update(dict(status =1))
-    db.session.commit()
+    databaseHelper.makeUserOnline(newUsername)
 
-    queryAll = User.query.all();
-
-    usersAll = []
-    content = {}
-    for result in queryAll:
-       content = {'user_id': result.user_id, 'display_name': result.display_name, 'avatar': result.avatar}
-       usersAll.append(content)
-       content = {}
-
-    onlineAll = User.query.filter_by(status =1).all();
-    userOnline = []
-    content = {}
-    for result in onlineAll:
-       content = {'user_id': result.user_id}
-       userOnline.append(content)
-       content = {}
+    usersAll = databaseHelper.getAllUser()
+    
+    userOnline = databaseHelper.getOnlineUser()
+    
     socketio.emit('someone connected', (newUserId,newUserDisplayName,userOnline, usersAll))
 
 
@@ -117,13 +93,8 @@ def disconnect():
     displayName = session.get("displayName")
     userid = session.get("userid")
 
-    User.query.filter_by(user_id =userid).update(dict(status =0))
-    db.session.commit()
-
-    
-    indexOfUser = usersOnlineDisplayNames.index(displayName)
-    usersOnlineDisplayNames.pop(indexOfUser)
-    usersOnlineAvatars.pop(indexOfUser)
+    databaseHelper.makeUserOffline(userid)
+   
     session.pop(app.config['SECRET_KEY'], None)
     session.clear()
     socketio.emit('disconnect event', userid)
@@ -133,12 +104,10 @@ def handleMessage(msg):
     messageAuthor = session.get("displayName")
     userAvatar = session.get('avatar')
     userid = session.get('userid')
-    
     receiverid = session.get("receiverid");
     msg = msg.encode('utf8'); 
-    newMsg = Message(sender=userid,receiver = receiverid,receiver_type = "U",message_content = msg)
-    db.session.add(newMsg)
-    db.session.commit()
+    
+    databaseHelper.insertMsg(userid, receiverid,"U",msg)
 
     socketio.emit("incoming message", (msg, userid,receiverid, userAvatar,messageAuthor))
 
@@ -148,17 +117,15 @@ def runRegisterAction():
     username = request.form.get("username").lower()
     displayName = request.form.get("displayName").lower()
 
-    if not checkUsernameUniqueness(username):
+    if databaseHelper.isUserNameAlreadyExist(username):
         return render_template('register.html', error="That username already exists. Please choose again.")
 
-    if not checkDisplayNameUniqueness(displayName):
+    if databaseHelper.isDisplayNameAlreadyExist(displayName):
         return render_template('register.html', error="That display name already exists. Please choose again.")
 
     
     password = request.form.get("password")
-    newUser = User(username=username, password=password, display_name=displayName, avatar=randrange(1, 15))
-    db.session.add(newUser)
-    db.session.commit()
+    newUser = databaseHelper.insertUser(username,password,displayName,randrange(1, 15))
     updateSession(user=newUser)
     return render_template('home.html')
 
@@ -166,42 +133,21 @@ def runRegisterAction():
 def runLoginAction():
     username = request.form.get("username").lower()
     password = request.form.get("password").lower()
-    user = User.query.filter_by(username=username).first()
-
-    if user is None or user.password != password:
+    user = databaseHelper.queryUserWithUsername(username)
+    
+    if databaseHelper.isUserAccountIncorrect(username,password):
         return render_template('login.html', error="Incorrect credentials. Please try again.")
     else:
-        User.query.filter_by(user_id =user.user_id).update(dict(status =1))
-        db.session.commit()
+        databaseHelper.makeUserOnline(user['username'])
         updateSession(user=user)
         return render_template('home.html')
 
-
-def checkUsernameUniqueness(username):
-    usersWithUsername = User.query.filter_by(username=username).count()
-    if usersWithUsername > 0:
-        return False
-    else:
-        return True
-
-
-def checkDisplayNameUniqueness(displayName):
-    usersWithDisplayName = User.query.filter_by(display_name=displayName).count()
-    if usersWithDisplayName > 0:
-        return False
-    else:
-        return True
-
-
 def updateSession(user):
-    session['displayName'] = user.display_name
-    session['username'] = user.username
-    session['userid'] = user.user_id
-    session['avatar'] = user.avatar
+    session['displayName'] = user['display_name']
+    session['username'] = user['username']
+    session['userid'] = user['user_id']
+    session['avatar'] = user['avatar']
     
-    usersOnlineDisplayNames.append(user.display_name)
-    usersOnlineAvatars.append(user.avatar)
-    usersOnlineId.append(user.user_id)
 
 
 if __name__ == '__main__':

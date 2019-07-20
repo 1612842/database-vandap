@@ -1,6 +1,25 @@
-# Nội dung
+- [1. Nội dung](#1-N%E1%BB%99i-dung)
+  - [1.1. Khái niệm về database](#11-Kh%C3%A1i-ni%E1%BB%87m-v%E1%BB%81-database)
+  - [1.2. SQL (Structure Query Language)](#12-SQL-Structure-Query-Language)
+  - [1.3. So sánh với NoSQL](#13-So-s%C3%A1nh-v%E1%BB%9Bi-NoSQL)
+    - [1.3.1. SQL tables và NoSQL Documents](#131-SQL-tables-v%C3%A0-NoSQL-Documents)
+    - [1.3.2. SQL schema và NoSQL Schemaless](#132-SQL-schema-v%C3%A0-NoSQL-Schemaless)
+    - [1.3.3. SQL Normalization vs NoSQL Denormalization](#133-SQL-Normalization-vs-NoSQL-Denormalization)
+    - [1.3.4. SQL Relational JOIN vs NoSQL](#134-SQL-Relational-JOIN-vs-NoSQL)
+    - [1.3.5. SQL vs NoSQL Transactions](#135-SQL-vs-NoSQL-Transactions)
+    - [1.3.6. SQL vs NoSQL Performance](#136-SQL-vs-NoSQL-Performance)
+    - [1.3.7. Bảng so sánh](#137-B%E1%BA%A3ng-so-s%C3%A1nh)
+  - [1.4. Khi nào dùng SQL - NoSQL ?](#14-Khi-n%C3%A0o-d%C3%B9ng-SQL---NoSQL)
+    - [1.4.1. Dùng SQL?](#141-D%C3%B9ng-SQL)
+    - [1.4.2. Dùng NoSQL?](#142-D%C3%B9ng-NoSQL)
+  - [1.5. MySQL](#15-MySQL)
+  - [1.6. Redis](#16-Redis)
+  - [1.7. Bài tập Schema cho ứng dụng Chat](#17-B%C3%A0i-t%E1%BA%ADp-Schema-cho-%E1%BB%A9ng-d%E1%BB%A5ng-Chat)
+- [2. Nguồn tham khảo](#2-Ngu%E1%BB%93n-tham-kh%E1%BA%A3o)
 
-## Khái niệm về database
+# 1. Nội dung
+
+## 1.1. Khái niệm về database
 
 -   Database là môt tập hợp có tổ chức của dữ liệu, thường được lưu trữ và truy cập từ hệ thống máy tính. Khi database trở nên phức tạp hơn, chúng thường được phát triển bằng cách sử dụng các kỹ thuật thiết kế (modeling techniques) và mô hình hóa chính thức (formal design)
 -   Database management system (DBMS) là phần mềm tương tác với người dùng end user, applications, và chính database nó để nắm bắt và phân tích dữ liệu
@@ -27,7 +46,7 @@
     -   [**Others**](https://en.wikipedia.org/wiki/Database#Classification)
 
 
-## SQL (Structure Query Language)
+## 1.2. SQL (Structure Query Language)
 
 -   SQL chính là viết tắt của Structured Query language, được phát âm là "S-Q-L" hoặc đôi khi là "See-Quel" là ngôn ngữ chuẩn để xử lý Cơ sở dữ liệu quan hệ. Một cơ sở dữ liệu quan hệ xác định các mối quan hệ dưới dạng các bảng.
 
@@ -46,7 +65,7 @@ Các lệnh **SQL** có thể chia các loại sau:
 - Data administration commands
 - Transactional control commands
 
-#### **Defining Database Structures** : 
+#### 1.2.0.1. **Defining Database Structures** : 
 
 ```
 CREATE TABLE
@@ -59,7 +78,7 @@ CREATE VIEW
 DROP VIEW
 ```
 
-#### **Manipulating Data**
+#### 1.2.0.2. **Manipulating Data**
 
 ```
 INSERT
@@ -67,13 +86,13 @@ UPDATE
 DELETE
 ```
 
-#### **Selecting Data**
+#### 1.2.0.3. **Selecting Data**
 
 ```
  SELECT
 ```
 
-#### **Data Control Language**
+#### 1.2.0.4. **Data Control Language**
 
 ```
 ALTER PASSWORD
@@ -81,14 +100,14 @@ GRANT
 REVOKED
 CREATE SYNONYM
 ```
-#### **Data Administration Commands**
+#### 1.2.0.5. **Data Administration Commands**
 
 ```
 START AUDIT
 STOP AUDIT
 ```
 
-#### **Transactional Control Commands**
+#### 1.2.0.6. **Transactional Control Commands**
 
 ```
 COMMIT : Saves database transactions
@@ -97,7 +116,7 @@ SAVEPOINT : Creates points within groups of transactions in which to ROLLBACK
 SET TRANSACTION : Places a name on a transaction
 ```
 
-#### Các lệnh SQL thông dụng:
+#### 1.2.0.7. Các lệnh SQL thông dụng:
 
 **ALTER TABLE** 
 
@@ -399,7 +418,7 @@ WHERE column_name operator value;
 The `WITH` clause is also known as common table expression (CTE) and subquery factoring.
 
 
-## So sánh với NoSQL
+## 1.3. So sánh với NoSQL
 
 -   SQL chính là viết tắt của Structured Query language, được phát âm là "S-Q-L" hoặc đôi khi là "See-Quel" là ngôn ngữ chuẩn để xử lý Cơ sở dữ liệu quan hệ. Một cơ sở dữ liệu quan hệ xác định các mối quan hệ dưới dạng các bảng
 
@@ -407,7 +426,7 @@ The `WITH` clause is also known as common table expression (CTE) and subquery fa
 
 -   RDBMS truyền thống sử dụng cú pháp SQL để lưu trữ và truy xuất dữ liệu để có thêm thông tin chi tiết. Thay vào đó, một hệ thống cơ sở dữ liệu NoSQL bao gồm một loạt các công nghệ cơ sở dữ liệu có thể lưu trữ dữ liệu có cấu trúc, bán cấu trúc, không có cấu trúc và đa hình.
 
-### SQL tables và NoSQL Documents
+### 1.3.1. SQL tables và NoSQL Documents
 
 -   SQL databases cung cấp kiểu lưu trữ dữ liệu dưới dạng bảng và các bảng này có quan hệ với nhau. VD thông tin books trong bảng được đặt tên books. Mỗi một row ứng với một record, mỗi column ứng với mỗi field dữ liệu. NoSQL databases lưu trữ dưới dạng JSON dưới dạng field-value từng cặp một.
 
@@ -442,7 +461,7 @@ The `WITH` clause is also known as common table expression (CTE) and subquery fa
 
 -   SQL table thì lại tạo ra một mẫu dữ liệu rất chặt chẽ từ datatype, field name, validation, và đó cũng là điểm mấu chốt có thể gây ra những sai lầm. NoSQL thì lại mềm dẽo hơn rất nhiều và có thể lưu ở mọi nơi nên có vẫn có thể gặp vấn đề về nhất quán
 
-### SQL schema và NoSQL Schemaless
+### 1.3.2. SQL schema và NoSQL Schemaless
 
 -   Trong SQL databases, ta có thể thêm dữ liệu nếu bạn tạo bảng và field types tương ứng được gọi là schema. Schema chứa nhưng thông tin về database mà bạn đang sử dụng như: primary keys, indexes, relationships ... Do đó schema phải được design và implements đầu tiên. Tuy nhiên nó cũng có thể update sau nhưng những thay đổi lớn sẽ trở lên phức tạp hơn khi nhìn vào file schema.
 
@@ -460,7 +479,7 @@ db.book.insert(
 
 -   NoSQL database có thể phù hợp hơn cho các dự án mà các yêu cầu dữ liệu ban đầu rất khó xác định.
 
-### SQL Normalization vs NoSQL Denormalization
+### 1.3.3. SQL Normalization vs NoSQL Denormalization
 
 -   Giả sử nếu muốn thêm thông tin nhà publisher vào databases. Một nhà xuất bản có thể cung cấp nhiều books vì vậy, trong một cơ sở dữ liệu SQL tạo một bảng publisher_tbl sau đó add một field publisher_id vào books_tbl để tham chiếu đến mỗi bản ghi trong publisher_tbl
 -   Điều này giảm thiểu sự thừa dữ liệu, không lặp lại thông tin publisher cho mỗi cuốn sách - chỉ có tham chiếu đến nó thôi. Kỹ thuật này được gọi là chuẩn hóa (Normalization), và có những lợi ích thiết thực. Chúng tôi có thể cập nhật một publisher duy nhất mà không thay đổi dữ liệu trong book
@@ -507,7 +526,7 @@ và nó sẽ tham chiếu đến mỗi document trong publisher collection
 
 -   Điều này sẽ làm tốc độ query nhanh hơn. nhưng khi update thông tin của publisher thì lại phải update rất nhiều bản ghi.
 
-### SQL Relational JOIN vs NoSQL
+### 1.3.4. SQL Relational JOIN vs NoSQL
 
 -   SQL query cung cấp JOIN query rất mạnh mẽ. Chúng ta có thể lấy dữ liệu liên quan trong nhiều bảng bằng cách sử dụng một câu lệnh SQL
 
@@ -522,12 +541,12 @@ LEFT JOIN books.publisher_id ON publisher.id;
 -   NoSQL không trang bị JOIN, và điều này có thể gây sốc cho những người có kinh nghiệm SQL. Nếu chúng ta sử dụng collection như mô tả ở trên, chúng ta cần phải get all các documents trong book collection, lấy tất cả các tài liệu của nhà xuất bản liên quan và liên kết chúng bằng tay trong logic chương trình của chúng ta. Đây là một trong những lý do denormalization thường là cần thiết.
 
 
-### SQL vs NoSQL Transactions
+### 1.3.5. SQL vs NoSQL Transactions
 
 -   Trong SQL, hai hoặc nhiều record update có thể được thực hiện trong một transaction - đảm bảo tất cả update thành công hoặc nếu 1 record update fails thì sẽ rollback lại toàn bộ các record khác. Điều này đảm bảo tính đồng nhất cho dữ liệu
 -   Trong NoSQL, việc sửa đổi một document là riêng lẻ. Nói cách khác, nếu bạn đang cập nhật ba giá trị trong một document, cả ba đều được cập nhật thành công hoặc nó vẫn không thay đổi. Tuy nhiên, không có transaction tương đương để update cho nhiều document. Có những option tương tụ như transaction.Nhưng chúng phải được xử lý thủ công trong khi viết code.
 
-### SQL vs NoSQL Performance
+### 1.3.6. SQL vs NoSQL Performance
 
 -   NoSQL thường được cho là nhanh hơn SQL. Điều này không đáng ngạc nhiên; NoSQL thì denormalized cho phép bạn lấy được tất cả thông tin về một item cụ thể với các codition mà không cần JOIN liên quan hoặc truy vấn SQL phức tạp.
 -   Điều đang nói là để hệ thống SQL hoạt động tốt và nhanh thì việc desgin tốt là cực kì quan trọng và ngược lại.
@@ -535,7 +554,7 @@ LEFT JOIN books.publisher_id ON publisher.id;
 
 ![](https://images.viblo.asia/1c4e1532-e1cd-4e9b-aa30-28579de6f851.png)
 
-### Bảng so sánh
+### 1.3.7. Bảng so sánh
 
 | Tham số 	| SQL 	| NoSQL 	|
 |---------------------------	|---------------------------------------------------------------------------------------------------------------------------------------------------------	|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
@@ -566,9 +585,9 @@ LEFT JOIN books.publisher_id ON publisher.id;
 
    ![](https://images.viblo.asia/ea5bb77b-8103-451f-b1ca-45a0c596f2cf.png)
 
-## Khi nào dùng SQL - NoSQL ?
+## 1.4. Khi nào dùng SQL - NoSQL ?
 
-### Dùng SQL? 
+### 1.4.1. Dùng SQL? 
 
 -   SQL là ngôn ngữ đơn giản nhất được sử dụng để giao tiếp với RDBMS
 =   Phân tích các phiên liên quan đến hành vi và tùy chỉnh
@@ -576,7 +595,7 @@ LEFT JOIN books.publisher_id ON publisher.id;
 -   Nó cho phép bạn lưu trữ và lấy dữ liệu từ cơ sở dữ liệu một cách nhanh chóng
 -   Được ưu tiên khi bạn muốn sử dụng các phép nối và thực hiện các truy vấn phức tạp
 
-### Dùng NoSQL?
+### 1.4.2. Dùng NoSQL?
 
 -   Khi không cần hỗ trợ ACID
 -   Khi mô hình RDBMS truyền thống không đủ
@@ -586,45 +605,82 @@ LEFT JOIN books.publisher_id ON publisher.id;
 -   Nó nên được sử dụng để lưu trữ dữ liệu tạm thời như giỏ mua hàng, danh sách mong muốn và dữ liệu phiên
 
 
-## MySQL
+## 1.5. MySQL
 
 [Tìm hiểu về MySQL](mysql/README.md)
 
-## Redis
+## 1.6. Redis
 
 [Tìm hiểu về Redis](redis/README.md)
 
-## Bài tập Schema cho ứng dụng Chat
+## 1.7. Bài tập Schema cho ứng dụng Chat
 
 Thiết kế schema cho chương trình chat - trò chuyện (với Redis và với MySQL), sử dụng Python để tương tác.
 
 Mô tả chương trình chat: cơ chế tương tự Zalo, Message. 
 
-### Cơ bản:
+**Sơ đồ SQL Diagram**
 
-- Tạo tài khoản (username/password, email,...)
-- Chọn người trò chuyện (theo username hoặc email)
-- Hiển thị lịch sử trò chuyện (nếu có)
-- Trò chuyện (chat)
+![](mysql/chatDBDiagram.png)
 
-### Nâng cao:
+**Cấu trúc JSON của Redis**
 
-- Kết bạn
-- Chat trong nhóm
-- Hiển thị trạng thái online/offline của người khác
-- Hiện thị trạng thái tin nhắn (seen)
+- Các users được lưu trữ trên Hash của Redis với Key có dạng `users:uuid` và value chứa các thuộc tính còn lại của user. Khi cần truy vấn ta dùng redis.Redis().scan_iter("users:*") để duyện tất cả các key users
+
+```json
+  "users:c966e6a2-aa42-11e9-a532-a8a79541af6d":{
+    "username": "asd",
+    "status": "0",
+    "display_name": "asd",
+    "avatar": "1",
+    "password": "asd"
+  }
+```
+
+- Các messages cũng được lưu trữ tương tự trên Redis Hash
+
+```json
+"messages:6e8b5a2e-a9fc-11e9-b756-a8a79541af6d":{
+  "message_content": "aloha",
+  "receiver": "users:e44e71a6-a9f2-11e9-b756-a8a79541af6d",
+  "message_time": "2019-07-19 15:08:46.299040",
+  "sender": "users:1786d364-a9f4-11e9-b756-a8a79541af6d",
+  "receiver_type": "U"
+}
+```
+
+- Groups, Contacts, Notifications, Groups_with_users cũng được lưu trữ với cơ chế tương tự
+
+**Giao diện ứng dụng**
+
+![](media/login.png)
+
+![](media/chat.png)
+
+**Vận hành ứng dụng**
+
+- [Source](chatApp)
+
+- cd vào thư mục chatApp và chạy `source venv/bin/activate`
+- Cài đặt các thư viện python từ file `requirements.txt` bằng lệnh `pip install -r requirements.txt`
+- Chạy server web với lệnh `python app.py` và dùng browser vào link http://localhost:5000
+
+# 2. Nguồn tham khảo
+https://en.wikipedia.org/wiki/Database
+
+SQL: 
+
+- https://www.w3schools.com/sql/default.asp
+- http://www.craigkerstiens.com/2019/02/12/sql-most-valuable-skill/
+
+NoSQL:
+
+- https://highlyscalable.wordpress.com/2012/03/01/nosql-data-modeling-techniques/
+- https://mapr.com/blog/data-modeling-guidelines-nosql-json-document-databases/
 
 
-### Hướng dẫn 
+Design:
 
-- Thiết kế hệ thống tài khoản 
-- Thiết kế cấu trúc lưu trữ lịch sử chat
-- Thiết kế cấu trúc lưu trữ nội dung tin nhắn 
-
-### Đánh giá
-
-- Thiết kế đáp ứng được yêu cầu cơ bản
-- Thiết kế đáp ứng được yêu cầu nâng cao
-- Sáng tạo, phát triển và mở rộng bài toán 
-- Ghi chép các vấn đề tìm hiểu hoặc gặp khó khăn
-
+- https://en.wikipedia.org/wiki/Database_design
+- https://www.kidscodecs.com/database-design/
+- https://www.guru99.com/database-design.html

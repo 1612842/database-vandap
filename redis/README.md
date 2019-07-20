@@ -1,6 +1,28 @@
-# Redis
+- [1. Redis](#1-Redis)
+  - [1.1. Version](#11-Version)
+  - [1.2. Installation](#12-Installation)
+    - [1.2.1. Cài đặt Redis server : Single](#121-C%C3%A0i-%C4%91%E1%BA%B7t-Redis-server--Single)
+    - [1.2.2. Cài đặt Redis server: Cluster](#122-C%C3%A0i-%C4%91%E1%BA%B7t-Redis-server-Cluster)
+  - [1.3. Các lệnh cơ bản và quản lý dữ liệu trong Redis](#13-C%C3%A1c-l%E1%BB%87nh-c%C6%A1-b%E1%BA%A3n-v%C3%A0-qu%E1%BA%A3n-l%C3%BD-d%E1%BB%AF-li%E1%BB%87u-trong-Redis)
+    - [1.3.1. Redis Keys](#131-Redis-Keys)
+    - [1.3.2. Redis String](#132-Redis-String)
+    - [1.3.3. Redis Hash](#133-Redis-Hash)
+    - [1.3.4. Redis list](#134-Redis-list)
+    - [1.3.5. Redis Set](#135-Redis-Set)
+    - [1.3.6. Redis sorted sets](#136-Redis-sorted-sets)
+    - [1.3.7. Redis transaction](#137-Redis-transaction)
+    - [1.3.8. Bitmaps](#138-Bitmaps)
+    - [1.3.9. HyperLogLogs](#139-HyperLogLogs)
+  - [1.4. Pub/Sub](#14-PubSub)
+  - [1.5. Lock](#15-Lock)
+    - [1.5.1. Khái niệm cơ bản](#151-Kh%C3%A1i-ni%E1%BB%87m-c%C6%A1-b%E1%BA%A3n)
+    - [1.5.2. Optimistic và Pessimistic Locking](#152-Optimistic-v%C3%A0-Pessimistic-Locking)
+    - [1.5.3. Distributed lock](#153-Distributed-lock)
+    - [1.5.4. Thuật toán Redlock của Redis](#154-Thu%E1%BA%ADt-to%C3%A1n-Redlock-c%E1%BB%A7a-Redis)
 
-## Version
+# 1. Redis
+
+## 1.1. Version
 
 Nắm được các version của redis, đặc biệt các version chạy ổn định (stable)
 
@@ -8,7 +30,7 @@ https://redis.io/download
 
 Redis uses a standard practice for its versioning: major.minor.patchlevel. An even minor marks a stable release, like 1.2, 2.0, 2.2, 2.4, 2.6, 2.8. Odd minors are used for unstable releases, for example 2.9.x releases are the unstable versions of what will be Redis 3.0 once stable.
 
-## Installation
+## 1.2. Installation
 
 
 Cài đặt redis server: single và cluster 
@@ -17,12 +39,12 @@ https://redis.io/topics/quickstart
 
 https://redis.io/topics/cluster-tutorial
 
-### Cài đặt Redis server : Single
+### 1.2.1. Cài đặt Redis server : Single
 
 * Download, extract và compile Redis với:
     ``` shell
         $ wget http://download.redis.io/releases/redis-5.0.5.tar.gz
-        $ tar xzf redis-5.0.2.tar.gz
+        $ tar xzf redis-5.0.5.tar.gz
         $ cd redis-5.0.5
         $ make
     ```
@@ -40,7 +62,7 @@ https://redis.io/topics/cluster-tutorial
         "bar"
     ```
 
-### Cài đặt Redis server: Cluster
+### 1.2.2. Cài đặt Redis server: Cluster
 
 - Tạo 6 node, gồm 3 master và 3 slave, tạo 6 file config trong 6 thư mục từ 7000 đến 7005
 
@@ -84,7 +106,7 @@ $ redis-cli -p 7000 -c
 ```
 
 
-## Các lệnh cơ bản và quản lý dữ liệu trong Redis
+## 1.3. Các lệnh cơ bản và quản lý dữ liệu trong Redis
 
 Nắm được các kiểu dữ liệu của Redis 
 
@@ -95,7 +117,7 @@ Làm quen với các lệnh trong Redis
 https://try.redis.io/
 
 
-### Redis Keys
+### 1.3.1. Redis Keys
 
 Redis key là các lệnh sử dụng để quản lý các key trong redis. Với cú pháp như sau:
 
@@ -117,7 +139,7 @@ COMMAND KEY_NAME [VALUE]
 | 8 	| RENAMENX key newkey 	| Đổi tên key sang newkey nếu newkey chưa tồn tại 	|
 | 9 	| TYPE key 	| Lấy loại dữ liệu được lưu trữ bởi key 	|
 
-### Redis String
+### 1.3.2. Redis String
 
 Redis string là lệnh sử dụng để quản lý các key/value trong đó value có giá trị string trong redis
 
@@ -147,7 +169,7 @@ redis 127.0.0.1:6379> GET test
 | 11 	| DECRBY key n 	| Giảm giá trị lưu trữ của key (số nguyên) n đơn vị 	|
 
 
-### Redis Hash
+### 1.3.3. Redis Hash
 
 Redis hash là lệnh sử dụng để quản lý các key/value trong đó value có giá trị là hash. Hash là kiểu dữ liệu khá phổ biến, thường được dùng để lưu trữ các object.
 
@@ -177,7 +199,7 @@ HGET user:1 name
 | 13 	| HMSET key field1 value1 field2 value2 ... 	| Đặt giá trị cho các field1 giá trị value1 field2 giá trị value2 ... 	|
 | 14 	| HMGET key field1 field2 ... 	| Lấy giá trị của các field1 field2 ... 	|
 
-### Redis list
+### 1.3.4. Redis list
 
 Redis list là lệnh sử dụng để quản lý các key/value trong đó value có giá trị là một list (danh sách). List là kiểu dữ liệu khá phổ biến, có 2 kiểu list thường dùng là stack (vào sau ra trước) và queue (vào trước ra trước)
 
@@ -209,7 +231,7 @@ LPUSH test value1
 | 9 	| LINSERT key BEFORE value1 value2 	| Thêm phần tử value2 vào trước phần tử value1 trong danh sách 	|
 | 10 	| LINSERT key AFTER value1 value2 	| Thêm phần tử value2 vào sau phần tử value1 trong danh sách 	|
 
-### Redis Set
+### 1.3.5. Redis Set
 
 Redis set là lệnh sử dụng để quản lý các key/value trong đó value có giá trị là một set (tập hợp). Các giá trị trong tập hợp là duy nhất không bị trùng lặp.
 
@@ -238,7 +260,7 @@ redis 127.0.0.1:6379> SMEMBERS test
 | 3 	| SMEMBERS key 	| Lấy các phần tử trong tập hợp 	|
 | 4 	| SPOP key 	| Xóa bỏ ngẫu nhiên một phần tử trong tập hợp và trả về giá trị phần tử đó 	|
 
-### Redis sorted sets
+### 1.3.6. Redis sorted sets
 
 Redis sorted set là lệnh sử dụng để quản lý các key/value trong đó value có giá trị là một sorted set (tập hợp được sắp xếp theo điểm/độ ưu tiên từ thấp đến cao). Các giá trị trong sorted set là duy nhất không bị trùng lặp.
 
@@ -278,7 +300,7 @@ redis 127.0.0.1:6379> ZRANGE test 0 10 WITHSCORES
 | 6 	| ZRANK key member 	| Lấy vị trí của member trong sorted set 	|
 | 7 	| ZCOUNT key score1 score2 	| Đếm số member có score tương ứng trong đoạn score1 đến score2 	|
 
-### Redis transaction
+### 1.3.7. Redis transaction
 
 Một điểm khá thú vị trong Redis là transaction. Redis transaction cho phép một nhóm các lệnh thực hiện theo thứ tự cho đến khi lệnh cuối cùng được thực hiện xong. Khi này Redis mới cập nhật đồng thời dữ liệu thay đổi bởi nhóm lệnh này. Redis transaction bắt đầu bằng lệnh MULTI và kết thúc bằng lệnh EXEC
 
@@ -307,7 +329,7 @@ redis 127.0.0.1:6379> EXEC
 | 1 	| MULTI 	| Đánh dấu bắt đầu khối lệnh transaction 	|
 | 2 	| EXEC 	| Thực hiện khối lệnh 	|
 
-### Bitmaps
+### 1.3.8. Bitmaps
 * Bitmaps không phải là dạng dữ liệu thực tế, nhưng nó là tập hợp các bit định hướng hoạt động dựa trên kiểu String. Vì String là những blobs nhị phân có độ dài tối đa là 512MB nên phù hợp cho thiết lập 2^32 bit khác nhau. Bitmaps rất lý tưởng để tiết kiệm không gian khi lưu trữ thông tin dưới dạng các mảng bit
 
     ```bash
@@ -319,7 +341,7 @@ redis 127.0.0.1:6379> EXEC
         (integer) 2
     ```
 
-### HyperLogLogs
+### 1.3.9. HyperLogLogs
 * Hyperloglog là một cấu trúc dữ liệu xác suất được sử dụng để đếm những phần tử riêng biệt (unique items - về mặt kỹ thuật điểu này được gọi là ước tính số lượng của một bộ). Thông thường việc đếm những unique items đòi hỏi phải sử dụng lượng bộ nhớ tương ứng với số lượng item muốn đếm bởi vì cần lưu trữ những element đã xuất hiện để tránh đếm chúng nhiều lần. Tuy nhiên, có một tập hơp các thuật toán cho phép giao dịch bộ nhớ với độ chính xác: kết thúc tại điểm ước tính có một lỗi tiêu chuẩn, trong trường hợp triển khai Redis nhỏ hơn 1%. Sự kí diệu của thuật toán này là không cần sử dụng lượng bộ nhớ tỉ lệ thuận với số mục được đềm, thay vào đó có thể sử dụng lượng bộ nhớ không đổi. 12k bytes trong trường hợp xấu nhất hoặc ít hơn nhiều nếu HiperLoglog đã thấy rất ít element.
 
 - Bảng Function :
@@ -338,7 +360,7 @@ redis 127.0.0.1:6379> EXEC
         (integer) 4
     ```
 
-## Pub/Sub
+## 1.4. Pub/Sub
 
 Nắm được cách sử dụng pub/sub của Redis
 
@@ -406,7 +428,7 @@ Reading messages... (press Ctrl-C to quit)
 ```
 
 
-## Lock
+## 1.5. Lock
 
 
 Nắm được khái niệm cơ bản về lock 
@@ -422,13 +444,13 @@ https://en.wikipedia.org/wiki/Lock_(computer_science)
 https://redis.io/topics/distlock
 
 
-### Khái niệm cơ bản
+### 1.5.1. Khái niệm cơ bản
 
 - Trong khoa học máy tính, thuật ngữ **lock** hay **mutex** (từ _mutual exclusion (loại trừ tương hỗ)_) là một cơ chế đồng bộ để quản lý số lượng truy cập vào vùng tài nguyên cùng một thời điểm trong môi trường có nhiều _threads_ cùng thực thi. Một _lock_ được thiết kế để bắt buộc các _threads_ trên tuân theo chính sách điều khiển loại trừ tương hỗ.
 
 - Trong **RDBMS** Locking là một cơ chế  ngăn chặn người dùng từ nhiều transactions khác nhau gây ra data conflicts. Locking một row giúp ngăn chặn các transactions khác thay đổi row đó cho đến khi transaction đang truy cập vào nó kết thúc. Trong đó có 2 chiến lược lock là: optimistic và pesimistic. 
 
-### Optimistic và Pessimistic Locking
+### 1.5.2. Optimistic và Pessimistic Locking
 
 **Problem:** Giả sử 2 user A và B đều đọc chung dữ liệu Customer từ Database, sau đó cả 2 cùng thay đổi dữ liệu 1 bản ghi (customer x trong Database) và cùng cố gắng ghi dữ liệu (đã thay đổi) của mình vào Database. Vậy thì thay đổi nào sẽ được thực hiện: của A, B, cả 2 hay không ai cả.
 
@@ -437,7 +459,7 @@ https://redis.io/topics/distlock
 ![](http://labs.septeni-technology.jp/wp-content/uploads/2017/05/2a.jpg)
 >https://labs.septeni-technology.jp/technote/optimistic-hay-pessimistic-locking/
 
-#### Optimistic Locking
+#### 1.5.2.1. Optimistic Locking
 
 ![](https://labs.septeni-technology.jp/wp-content/uploads/2017/05/OOL.png)
 
@@ -461,7 +483,7 @@ WHERE id=? and version= session’s copy of version
 ```
 
 
-#### Pessimistic Locking
+#### 1.5.2.2. Pessimistic Locking
 
 ![](https://labs.septeni-technology.jp/wp-content/uploads/2017/05/POL.png)
 
@@ -515,7 +537,7 @@ Sau khi LOCK IN SHARE MODE, câu query sẽ trả về giá trị Jones và tran
 Khi thực hiện FOR UPDATE, transaction khác sẽ không tìm thấy dữ liệu từ bảng parent với row có name là Jones.
 
 
-#### Kết luận
+#### 1.5.2.3. Kết luận
 
 <p align="center">
         <img src="https://i1.wp.com/69.89.31.106/~maddukur/wp-content/uploads/2017/11/PesVsOpt.jpg?resize=525%2C328"/>
@@ -527,12 +549,12 @@ Chúng ta sẽ sử dụng mỗi cơ chế locking vào mỗi nghiệp vụ khá
 
 
 
-### Distributed lock 
+### 1.5.3. Distributed lock 
 * Distributed lock được sử dụng để chia sẻ tài nguyên theo cách loại trừ lẫn nhau. Tức là tại một thời điểm, chỉ có một đối tượng kiểm soát được tài nguyên.
 * Distributed lock là một cách căn bản hữu ích trong các môi trường mà có nhiều tiến trình khác nhau phải hoạt động với các tài nguyên được chia sẻ độc quyền
 
 
-### Thuật toán Redlock của Redis
+### 1.5.4. Thuật toán Redlock của Redis
 * Redlock là thuật toán thích hợp để cài đặt Distributed Lock Manager.
 * Safety and Liveness guarantees
     * Safety property: Mutual Exclution. Tại bất kỳ một thời điểm, chỉ có 1 client có thể giữ lock.

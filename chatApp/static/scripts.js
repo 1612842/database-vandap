@@ -68,7 +68,7 @@ window.onload = function () {
     }
 
     if (stringPathName.includes("chat")) {
-      receiverID=parseInt(stringPathName.split("/")[2]);
+      receiverID=stringPathName.split("/")[2];
       var sessionValue = $("#demoSession").data('value');
       console.log(sessionValue)
       var myObject = eval('(' + sessionValue + ')');

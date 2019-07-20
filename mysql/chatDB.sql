@@ -80,3 +80,14 @@ ALTER TABLE group_with_user
 
 ALTER TABLE contacts
     ADD FOREIGN KEY (user) REFERENCES users(user_id);
+
+
+CREATE PROCEDURE `getMsg`(idsend int, idreceive int)
+BEGIN
+select * 
+from users join messages on users.user_id = messages.sender
+where (sender=idsend and receiver =idreceive) or (sender=idreceive and receiver =idsend)
+order by message_id asc;
+END
+
+

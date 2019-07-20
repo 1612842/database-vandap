@@ -3,12 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-import mysql_config
 
 db = SQLAlchemy()
-
-engine = create_engine(mysql_config.connectionString)
-
 
 class User(db.Model):
     __tablename__ = "users"

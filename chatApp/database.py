@@ -6,9 +6,6 @@ from datetime import datetime
 from pprint import pprint
 import operator
 ABC = abc.ABCMeta('ABC', (object,), {})
-import mysql_config
-
-print mysql_config.connectionString
 
 class DatabaseBase(ABC):
     @abc.abstractmethod
@@ -16,13 +13,6 @@ class DatabaseBase(ABC):
         pass
 
     @abc.abstractmethod
-    def connect(self):
+    def connect(self,app):
         pass
         
-
-class MySQLDB(DatabaseBase):
-    def printType(self):
-        print "MySQL"
-    
-    def connect(self):
-        pass

@@ -1,6 +1,31 @@
-# MySQL
+- [1. MySQL](#1-MySQL)
+  - [1.1. Storage Engine](#11-Storage-Engine)
+  - [1.2. Installation](#12-Installation)
+  - [1.3. Data Types](#13-Data-Types)
+    - [1.3.1. Các Data types cơ bản](#131-C%C3%A1c-Data-types-c%C6%A1-b%E1%BA%A3n)
+    - [1.3.2. Kiểu utf8mb4](#132-Ki%E1%BB%83u-utf8mb4)
+  - [1.4. Transaction](#14-Transaction)
+    - [1.4.1. Transaction là gì?](#141-Transaction-l%C3%A0-g%C3%AC)
+    - [1.4.2. Kiểu transaction](#142-Ki%E1%BB%83u-transaction)
+    - [1.4.3. Các thuộc tính Transaction](#143-C%C3%A1c-thu%E1%BB%99c-t%C3%ADnh-Transaction)
+    - [1.4.4. Rủi ro của transaction](#144-R%E1%BB%A7i-ro-c%E1%BB%A7a-transaction)
+    - [1.4.5. Xử lý transaction](#145-X%E1%BB%AD-l%C3%BD-transaction)
+    - [1.4.6. Distributed transaction](#146-Distributed-transaction)
+  - [1.5. Isolation](#15-Isolation)
+    - [1.5.1. Vấn đề](#151-V%E1%BA%A5n-%C4%91%E1%BB%81)
+    - [1.5.2. Read uncommitted](#152-Read-uncommitted)
+    - [1.5.3. Read committed](#153-Read-committed)
+    - [1.5.4. Repeatable read](#154-Repeatable-read)
+    - [1.5.5. Serializable](#155-Serializable)
+    - [1.5.6. Snapshot](#156-Snapshot)
+    - [1.5.7. Tóm lại](#157-T%C3%B3m-l%E1%BA%A1i)
+  - [1.6. Connector](#16-Connector)
+    - [1.6.1. JDBC Driver](#161-JDBC-Driver)
+    - [1.6.2. Python](#162-Python)
 
-## Storage Engine
+# 1. MySQL
+
+## 1.1. Storage Engine
 
 >Nắm được ưu/nhược điểm của các storage engine cơ bản của MySQL: InnoDB, MyISAM,...
 
@@ -163,18 +188,18 @@ Khi hoạt động ở các chế độ tuân thủ ACID đầy đủ, InnoDB ph
 - MyISAM sử dụng khóa mức bảng để cập nhật và xóa các hàng hiện có, với một tùy chọn để nối các hàng mới thay vì lấy khóa và chèn chúng vào không gian trống. InnoDB sử dụng khóa cấp hàng. Đối với các ứng dụng cơ sở dữ liệu lớn, nơi nhiều hàng thường được cập nhật, cấp hàng khóa là rất quan trọng bởi vì một khóa bảng duy nhất giảm đáng kể đồng thời trong cơ sở dữ liệu.
 Cả InnoDB và MyISAM đều hỗ trợ tìm kiếm toàn văn, với InnoDB đạt được sự hỗ trợ chỉ mục toàn văn trong MySQL 5.6.4, nhưng kết quả có thể khác biệt đáng kể.
 
-## Installation
+## 1.2. Installation
 
 Cài đặt MySQL server, tạo database và table, thao tác với MySQL (select, insert, update, delete, alter) theo link bên dưới
 >http://www.ntu.edu.sg/home/ehchua/programming/sql/mysql_howto.html
 
-## Data Types
+## 1.3. Data Types
 
 >Nắm được các kiểu dữ liệu cơ bản của MySQL.
 >Sử dụng đúng kiểu dữ liệu để đạt hiệu quả tốt nhất.
 >Tìm hiểu các dữ liệu đặc biệt và cách xử lý: utf8mb4
 
-### Các Data types cơ bản
+### 1.3.1. Các Data types cơ bản
 
 MySQL sử dụng nhiều kiểu dữ liệu, được chia thành 3 loại: kiểu Number, kiểu Datetime, và kiểu String.
 
@@ -216,7 +241,7 @@ MySQL sử dụng nhiều kiểu dữ liệu, được chia thành 3 loại: ki�
   TIME|Lưu time trong định dạng HH:MM:SS
   YEAR(M)|Lưu 1 năm trong định dạng 2 chữ số hoặc 4 chữ số. Nếu độ dài được xác định là 2 (ví dụ: YEAR(2)), YEAR có thể từ 1970 tới 2069 (70 tới 69). Nếu độ dài được xác định là 4, YEAR có thể từ 1901 tới 2155. Độ dài mặc định là 4.
 
-### Kiểu utf8mb4
+### 1.3.2. Kiểu utf8mb4
 
  *  Utf8mb4 là kiểu dữ liệu đặc biệt ánh xạ tới từ UTF-8, do đó hỗ trợ đầy đủ Unicode, bao gồm cả các biểu tượng astral.
  *  Đặc điểm
@@ -274,7 +299,7 @@ MySQL sử dụng nhiều kiểu dữ liệu, được chia thành 3 loại: ki�
 
 
 
-## Transaction
+## 1.4. Transaction
 
 Tìm hiểu transaction của MySQL:
 
@@ -284,20 +309,20 @@ Tìm hiểu transaction của MySQL:
 
 >https://dev.mysql.com/doc/refman/8.0/en/sql-syntax-transactions.html
 
-### Transaction là gì?
+### 1.4.1. Transaction là gì?
 
 - Có thể hiểu Transaction là một tiến trình xử lý có xác định điểm đầu và điểm cuối, được chia nhỏ thành các operation (phép thực thi) , tiến trình được thực thi một cách tuần tự và độc lập các operation đó theo nguyên tắc hoặc tất cả đều thành công hoặc một operation thất bại thì toàn bộ tiến trình thất bại. Nếu việc thực thi một operation nào đó bị fail đồng nghĩa với việc dữ liệu phải rollback về trạng thái ban đầu.
 
 - Có thể lấy ví dụ về 1 Transaction đơn giản nhất là tiến trình cài đặt phần mềm hoặc gỡ bỏ phần mềm. Việc cài đặt được chia thành các bước, thực hiện tuần tự từ đầu đến cuối, nếu toàn bộ các bước thực thi thành công đồng nghĩa với việc tiến trình cài đặt hoặc gỡ bỏ phần mềm thành công và ngược lại, một phép thất bại thì tiến trình phải rollback lại tức sẽ không có bất kỳ thay đổi nào trên máy tính.
 
-### Kiểu transaction 
+### 1.4.2. Kiểu transaction 
 
 - Các kiểu transaction khác nhau được phân biệt bằng việc chia các operation như thế nào. Có hai mô hình transaction như sau:
   - **Flat Transaction – Transaction ngang hàng** Việc chia các operation là ngang hàng nhau. Thực thi các operation là tuần tự từ trái sang phải hoặc từ trên xuống dưới.
 
   - **Nested Transaction – Transaction lồng nhau** Việc thực thi các operation dựa theo nguyên tắc từ trong ra ngoài. Như vậy khi nhìn vào hình vẽ chúng ta thấy các operation ở dạng này có vẻ phụ thuộc vào nhau nhưng khi thực thi thì là độc lập theo nguyên tắc operation trong thực thi xong thì mới đến operation ngoài.
 
-### Các thuộc tính Transaction
+### 1.4.3. Các thuộc tính Transaction
 
 - Mô hình ACID được gắn chặt với cơ sở dữ liệu quan hệ (Relation DB). Tuy nhiên, xét về transaction nói chung, chúng ta cũng có thể áp dụng các thuộc tính này vào.
 
@@ -309,7 +334,7 @@ Tìm hiểu transaction của MySQL:
 
   - **Durability – bền vững:** Dữ liệu của transaction sau khi thực thi xong được cố định, chính thức và bền vững. Nghĩa là những thay đổi đã được cố định, không có chuyện có thể chuyển lại trạng thái dữ liệu lúc trước khi thực hiện transaction.
 
-### Rủi ro của transaction
+### 1.4.4. Rủi ro của transaction
 
 - Có ba loại rủi ro chính khiến việc thực thi một transaction có thể bị fail.
 
@@ -319,7 +344,7 @@ Tìm hiểu transaction của MySQL:
 
   - **Các vấn đề với dữ liệu dùng chung:** Đây là vấn đề khó nhất. Rõ ràng data là một tài nguyên dùng chung, do đó sẽ có những nguy cơ mà transaction gặp phải khi xử lý dữ liệu dùng chung này. Ta sẽ xem xét kỹ hơn dưới đây. Như chúng ta đã biết, phần mềm viết ra là để xử lý dữ liệu, 2 operations (phép) căn bản của phần mềm với dữ liệu là đọc và ghi (read và write) trong đó phép write lại được chia nhỏ thành 3 operations nhỏ hơn là insert (thêm mới), update (sửa), delete (xóa). Dữ liệu là một tài nguyên dùng chung, nếu như có nhiều tiến trình xử lý đồng thời thực hiện các phép trên dữ liệu sẽ xảy ra những rủi ro: write-write, write-read,... việc dữ liệu ghi cùng lúc dẫn tới hỏng dữ liệu hoặc dữ liệu đọc ra không đồng nhất với dữ liệu mới ghi vào,... sẽ đề cập kỹ hơn trong phần tiếp theo dưới đây.
 
-### Xử lý transaction
+### 1.4.5. Xử lý transaction
 
 >https://viettuts.vn/sql/transaction-trong-sql
 
@@ -334,7 +359,7 @@ Tìm hiểu transaction của MySQL:
 
 - Chúng không thể được sử dụng trong lệnh CREATE TABLE hoặc DROP TABLE vì các hoạt động này được tự động được commit trong cơ sở dữ liệu.
 
-#### Lệnh COMMIT
+#### 1.4.5.1. Lệnh COMMIT
 
 - Lệnh COMMIT được sử dụng để lưu các thay đổi gọi bởi một transaction với cơ sở dữ liệu.
 
@@ -386,7 +411,7 @@ Vì vậy, hai hàng từ bảng sẽ bị xóa và câu lệnh SELECT sẽ cho 
 +----+----------+-----+-----------+----------+
 ```
 
-#### Lệnh ROLLBACK
+#### 1.4.5.2. Lệnh ROLLBACK
 
 Lệnh ROLLBACK được sử dụng để hoàn tác các transaction chưa được lưu vào cơ sở dữ liệu. Lệnh này chỉ có thể được sử dụng để hoàn tác các transaction kể từ khi lệnh COMMIT hoặc ROLLBACK cuối cùng được phát hành.
 
@@ -438,7 +463,7 @@ Vì vậy, hoạt động xóa sẽ không ảnh hưởng đến bảng và câu
 +----+----------+-----+-----------+----------+
 ```
 
-#### Lệnh SAVEPOINT
+#### 1.4.5.3. Lệnh SAVEPOINT
 
 SAVEPOINT là một điểm trong một transaction khi bạn có thể cuộn transaction trở lại một điểm nhất định mà không quay trở lại toàn bộ transaction.
 
@@ -529,7 +554,7 @@ RELEASE SAVEPOINT SAVEPOINT_NAME;
 
 Khi SAVEPOINT bị xóa, bạn không thể sử dụng lệnh ROLLBACK để hoàn tác các transaction được thực hiện kể từ lần SAVEPOINT cuối cùng.
 
-#### Lệnh SET TRANSACTION 
+#### 1.4.5.4. Lệnh SET TRANSACTION 
 
 Lệnh SET TRANSACTION có thể được sử dụng để bắt đầu một transaction cơ sở dữ liệu. Lệnh này được sử dụng để chỉ định các đặc tính cho transaction sau. Ví dụ, bạn có thể chỉ định một transaction chỉ được đọc hoặc đọc viết.
 
@@ -539,23 +564,23 @@ Cú pháp cho lệnh SET TRANSACTION như sau.
 SET TRANSACTION [ READ WRITE | READ ONLY ];
 ```
 
-### Distributed transaction
+### 1.4.6. Distributed transaction
 
 >https://en.wikipedia.org/wiki/Distributed_transaction
 
 Một **distributed transaction** (giao dịch phân tán) là một giao dịch **database transaction** được vận hành từ hai hay nhiều host thông qua network. Thông thường, hosts cung cấp một **transactional resources** , trong đó **transaction manager** có trách nhiệm tạo ra và quản lý các global transaction bao gồm các lệnh thao tác với tài nguyên. Distributed transactions cũng như các loại transactions khác phải có 4 tính chất của **ACID** (atomicity, consistency, isolation, duarability).
 
-## Isolation
+## 1.5. Isolation
 
 >Xác định isolation level của MySQL để xử lý đồng thời (concurrency)
 
-### Vấn đề
+### 1.5.1. Vấn đề
 
 Giả sử khi chúng ta đang tiến hành song song và đồng thời 2 transaction cùng cập nhật giá trị vào 1 bản ghi trong CSDL. Ở đây sẽ xảy ra **concurency** giữa các transaction và xảy ra các vấn đề :
   1. Transaction trước hay sau sẽ được tiến hành hay cả 2 cùng được tiến hành một lúc.
   2. Kết quả cuối cùng là kết quả của transaction nào trước hay sau? Ở đây xảy ra concurency giữa các transaction, chúng ta cùng tìm hiểu các mức level của **Isolation** để giải quyết vấn đề trên.
 
-### Read uncommitted
+### 1.5.2. Read uncommitted
 
 Một transaction lấy dữ liệu từ một transaction khác ngay cả khi transaction đó chưa được commit. Xét ví dụ cụ thể như sau:
 
@@ -593,7 +618,7 @@ Giả sử sau khi tiến hành câu Query 1 ta tiến hành chạy câu Query 2
 SELECT * FROM users WITH (nolock)
 ```
 
-### Read committed
+### 1.5.3. Read committed
 
 Đây là level default của một transaction nếu như chúng ta không config gì thêm. Tại level này thì Transaction sẽ không thể đọc dữ liệu từ từ một Transaction đang trong quá trình cập nhật hay sửa đổi mà phải đợi transacction đó hoàn tất. Như vậy thì chúng ta có thể tránh được Dirty Read và Dirty Write nhưng các Transaction sẽ phải chờ nhau => Perfoman hệ thống thấp. Ta thực hiện câu Query 1 như sau:
 
@@ -616,7 +641,7 @@ COMMIT;
 Khi ta tiến hành thực thi câu Query 2 thì kết quả trả về sẽ bản ghi 'id' = 2 sẽ có point = 2. Mặc dù câu query q1 đã update tất cả bản ghi có id > 0 và updated point = 100 nhưng bản ghi với id = 2 được cập nhật sau khi bảng users được cập nhật và trước khi transaction (q1) kết thúc => Bản ghi này được gọi là **Phantom Row** (Bản ghi ma).
 
 
-### Repeatable read
+### 1.5.4. Repeatable read
 
 Giống như mức độ của Read Committed, tại mức độ này thì transaction còn không thể đọc / ghi đè dữ liệu từ một transaction đang tiến hành cập nhật trên bản ghi đó. Query 1:
 
@@ -637,7 +662,7 @@ COMMIT;
 
 Khi thực thi 2 câu query trên thì câu Query 2 phải đợi câu Query 1 commit hoàn tất mới có thể thực thi. Ở level này khi chúng ta sẽ được bảo vệ khi đọc dữ liệu select các bản ghi trong cùng một transaction. Giả sử ở câu Query 2 ta thay thế lệnh select thành lệnh **Update / Delete** thì dữ liệu tại 2 câu query sẽ khác nhau và chúng ta cũng không thể tránh được các **Phantom Row**.
 
-### Serializable
+### 1.5.5. Serializable
 
 Level cao nhất của Isolation, khi transaction tiến hành thực thi nó sẽ khóa các bản ghi liên quan và sẽ unlock cho tới khi rollback hoặc commit dữ liệu. Query 1:
 
@@ -658,11 +683,11 @@ INSERT INTO `users` (`id`, `name`, `point`) VALUES ('3', 'Tram', '3');
 Khi tiến hành 2 câu query trên thì bản ghi trả về giữa 2 lần select ở câu Query 1 là giống như nhau, và câu Query thứ 2 sẽ pending cho tới khi Query 1 kết thúc.
 
 
-### Snapshot
+### 1.5.6. Snapshot
 
 Tương tự với level Serializable, nhưng cách thức hoạt động nó lại khác so với Serializable. Khi một transaction select các bản ghi thì nó sẽ không lock các bản ghi này lại, mà tạo một bản sao trên bản ghi hoặc các bản ghi đó. Khi ta tiến hành **UPDATE / DELETE** ta tiến hành trên bản sao dữ liệu đó và không gây ảnh hưởng tới dữ liệu ban đầu. Ưu điểm của snapshot là giảm độ trễ giữa các transaction nhưng bù lại cần tốn thêm tài nguyên lưu trữ các bản sao.
 
-### Tóm lại
+### 1.5.7. Tóm lại
 
  Transaction isolation level | Dirty reads | Nonrepeatable reads | Phantoms 
 ---|---|---|---
@@ -672,11 +697,11 @@ Tương tự với level Serializable, nhưng cách thức hoạt động nó l�
  **Serializable**    	          |       -     |        -            |     -    |
 
 
-## Connector
+## 1.6. Connector
 
 >Nắm được một số cách kết nối với MySQL: jdbc, python driver,...
 
-### JDBC Driver
+### 1.6.1. JDBC Driver
 
 >https://o7planning.org/vi/10167/huong-dan-su-dung-java-jdbc
 
@@ -776,7 +801,7 @@ Tương tự với level Serializable, nhưng cách thức hoạt động nó l�
     4  Tran  DaLat
   ```
 
-### Python
+### 1.6.2. Python
 
 - Dùng `mysql.connector` trên python:
   - Install module :
