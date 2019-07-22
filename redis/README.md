@@ -552,7 +552,10 @@ Chúng ta sẽ sử dụng mỗi cơ chế locking vào mỗi nghiệp vụ khá
 ### 1.5.3. Distributed lock 
 * Distributed lock được sử dụng để chia sẻ tài nguyên theo cách loại trừ lẫn nhau. Tức là tại một thời điểm, chỉ có một đối tượng kiểm soát được tài nguyên.
 * Distributed lock là một cách căn bản hữu ích trong các môi trường mà có nhiều tiến trình khác nhau phải hoạt động với các tài nguyên được chia sẻ độc quyền
-
+* Thông thường, khi chúng ta `lock` data, đầu tiên phải acquire the lock, để có quyền truy xuất độc quyền data. Sau đó thực hiện các thao tác, cuối cùng nhả lock cho tác vụ khác. Chuỗi hoạt động acquire, operate, release được biết trong context của shared memory data structures được truy cập bởi các threads. Trong context của Redis, ta sử dụng WATCH thay thế cho 1 lock, gọi là optimistic locking, thay vì thực sự ngăn người khác modify data, chúng ta notify xem có ai thay đổi data trước khi ta thay đổi hay không
+* Với distributed locking, chúng ta cũng có acquire, operate, release nhưng thay vì có lock mà chỉ nhận biết được trong bởi các threads trong cùng process hoặc các process trong cùng 1 máy, chúng ta sử dụng 1 lock mà các Redis client khác nhau trên các máy khác nhau có thể acquire và release. Khi nào sử dụng lock hay WATCH sẽ dụng trên ứng dụng, một số ứng dụng không cần đến lock, 1 số chỉ cần lock 1 phần và một số cần lock tại mỗi bước 
+* Một lý do tại sao chúng ta dành nhiều thời gian xây locks với Redis thay vì sử dụng locks operating system-level hay language-level do vấn đề phạm vi. Client muốn truy xuất độc quyền, client cần có quyền truy cập 1 lock được defined trong phạm vi mà tất cả client có thể thấy. Redis có một loại khóa cơ bản có sẵn ở command SETNX, nhưng không đầy đủ tính năng và không offer advanced functionality mà distruted lock expected
+ 
 
 ### 1.5.4. Thuật toán Redlock của Redis
 * Redlock là thuật toán thích hợp để cài đặt Distributed Lock Manager.
